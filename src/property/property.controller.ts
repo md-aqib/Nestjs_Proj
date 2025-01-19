@@ -1,10 +1,16 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { CreatePropertyDto } from './dto/createProperty.dto';
+
+import { PropertyService } from './property.service';
+import { Property } from './schemas/property.schema';
 
 @Controller('property')
 export class PropertyController {
+    constructor(private propertyService: PropertyService) {}
+
     @Get()
-    findAll() {
-        return "All prperties"
+    async getAllProperties(): Promise<Property[]> {
+      return this.propertyService.findAll();
     }
 
     @Get(':id')
@@ -12,8 +18,17 @@ export class PropertyController {
         return id
     }
 
+    //@Post()
+    //@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    // create(@Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true })) body: CreatePropertyDto) {
+    //     return body;
+    // }
+    // create(@Body() body: CreatePropertyDto) {
+    //     return body;
+    // }
     @Post()
-    create() {
-        return "created property"
+    async createProperty(@Body() property: CreatePropertyDto): Promise<Property> {
+        console.log({property});
+      return this.propertyService.create(property);
     }
 }

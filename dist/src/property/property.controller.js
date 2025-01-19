@@ -14,15 +14,21 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PropertyController = void 0;
 const common_1 = require("@nestjs/common");
+const createProperty_dto_1 = require("./dto/createProperty.dto");
+const property_service_1 = require("./property.service");
 let PropertyController = class PropertyController {
-    findAll() {
-        return "All prperties";
+    constructor(propertyService) {
+        this.propertyService = propertyService;
+    }
+    async getAllProperties() {
+        return this.propertyService.findAll();
     }
     findOne(id) {
         return id;
     }
-    create() {
-        return "created property";
+    async createProperty(property) {
+        console.log({ property });
+        return this.propertyService.create(property);
     }
 };
 exports.PropertyController = PropertyController;
@@ -30,8 +36,8 @@ __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], PropertyController.prototype, "findAll", null);
+    __metadata("design:returntype", Promise)
+], PropertyController.prototype, "getAllProperties", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
@@ -41,11 +47,13 @@ __decorate([
 ], PropertyController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], PropertyController.prototype, "create", null);
+    __metadata("design:paramtypes", [createProperty_dto_1.CreatePropertyDto]),
+    __metadata("design:returntype", Promise)
+], PropertyController.prototype, "createProperty", null);
 exports.PropertyController = PropertyController = __decorate([
-    (0, common_1.Controller)('property')
+    (0, common_1.Controller)('property'),
+    __metadata("design:paramtypes", [property_service_1.PropertyService])
 ], PropertyController);
 //# sourceMappingURL=property.controller.js.map
