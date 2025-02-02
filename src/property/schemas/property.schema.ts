@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
 
 export enum Category {
   RESIDENTIAL = 'Residential',
@@ -9,6 +10,12 @@ export enum Category {
   timestamps: true,
 })
 export class Property {
+  @Prop()
+  userId: mongoose.Types.ObjectId;
+
+  @Prop()
+  email: string;
+
   @Prop()
   name: string;
 

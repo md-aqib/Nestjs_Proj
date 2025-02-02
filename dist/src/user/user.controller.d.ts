@@ -1,9 +1,11 @@
 import { CreateUserDto } from './dto/registerUser.dto';
+import { UserResponseDto } from './dto/userResponse.dto';
+import { LoginUserDto } from './dto/loginUser.dto';
 import { UserService } from './user.service';
-import { User } from './schemas/user.schema';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
-    findOne(id: String): String;
-    registerUser(user: CreateUserDto): Promise<User>;
+    getUser(req: any): Promise<UserResponseDto>;
+    registerUser(user: CreateUserDto): Promise<UserResponseDto>;
+    loginUser(user: LoginUserDto): Promise<UserResponseDto>;
 }

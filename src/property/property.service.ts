@@ -10,9 +10,13 @@ export class PropertyService {
     private propertyModel: mongoose.Model<Property>,
   ) {}
 
-  async findAll(): Promise<Property[]> {
-    const properties = await this.propertyModel.find();
+  async findAll(filter: Record<string, any>): Promise<Property[]> {
+    const properties = await this.propertyModel.find(filter);
     return properties;
+  }
+
+  async findOne(filter: Record<string, any>): Promise<Property | null> {
+    return this.propertyModel.findOne(filter).exec();
   }
 
   async create(property: Property): Promise<Property> {

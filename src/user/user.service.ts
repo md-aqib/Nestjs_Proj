@@ -10,8 +10,11 @@ export class UserService {
     private userModel: mongoose.Model<User>,
   ) {}
 
+  async findOne(filter: Record<string, any>): Promise<User | null> {
+    return this.userModel.findOne(filter).exec();
+  }
+
   async create(user: User): Promise<User> {
-    console.log({user})
     const res = await this.userModel.create(user);
     return res;
   }

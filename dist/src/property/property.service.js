@@ -21,9 +21,12 @@ let PropertyService = class PropertyService {
     constructor(propertyModel) {
         this.propertyModel = propertyModel;
     }
-    async findAll() {
-        const properties = await this.propertyModel.find();
+    async findAll(filter) {
+        const properties = await this.propertyModel.find(filter);
         return properties;
+    }
+    async findOne(filter) {
+        return this.propertyModel.findOne(filter).exec();
     }
     async create(property) {
         console.log({ property });

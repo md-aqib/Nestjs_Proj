@@ -15,41 +15,104 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PropertyController = void 0;
 const common_1 = require("@nestjs/common");
 const createProperty_dto_1 = require("./dto/createProperty.dto");
+const auth_guard_1 = require("../auth/auth.guard");
 const property_service_1 = require("./property.service");
 let PropertyController = class PropertyController {
     constructor(propertyService) {
         this.propertyService = propertyService;
     }
-    async getAllProperties() {
-        return this.propertyService.findAll();
+    async getAllProperties(req) {
+        try {
+            const data = await this.propertyService.findAll({ email: req.user.email });
+            if (!data.length) {
+                throw new Error('Data not found');
+            }
+            return {
+                status: true,
+                message: "Data found successfully",
+                data
+            };
+        }
+        catch (error) {
+            return {
+                status: false,
+                message: error.mmessage
+            };
+        }
     }
-    findOne(id) {
-        return id;
+    async getProperty(propertyName, req) {
+        try {
+            const data = await this.propertyService.findOne({ name: propertyName });
+            if (!data) {
+                throw new Error('Data not found');
+            }
+            return {
+                status: true,
+                message: "Data found successfully",
+                data
+            };
+        }
+        catch (error) {
+            return {
+                status: false,
+                message: error.mmessage
+            };
+        }
     }
-    async createProperty(property) {
-        console.log({ property });
-        return this.propertyService.create(property);
+    async createProperty(property, req) {
+        try {
+            const { userId, email } = req.user;
+            const existingProperty = await this.propertyService.findOne({ name: property.name });
+            if (existingProperty) {
+                throw new common_1.BadRequestException('Property with this name already exists.');
+            }
+            ;
+            const newProperty = {
+                ...property,
+                userId,
+                email
+            };
+            console.log({ newProperty });
+            const data = await this.propertyService.create(newProperty);
+            return {
+                status: true,
+                message: "Created successfully!",
+                data
+            };
+        }
+        catch (error) {
+            return {
+                status: false,
+                message: error.message
+            };
+        }
     }
 };
 exports.PropertyController = PropertyController;
 __decorate([
     (0, common_1.Get)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PropertyController.prototype, "getAllProperties", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)(':propertyName'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Param)('propertyName')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], PropertyController.prototype, "findOne", null);
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], PropertyController.prototype, "getProperty", null);
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [createProperty_dto_1.CreatePropertyDto]),
+    __metadata("design:paramtypes", [createProperty_dto_1.CreatePropertyDto, Object]),
     __metadata("design:returntype", Promise)
 ], PropertyController.prototype, "createProperty", null);
 exports.PropertyController = PropertyController = __decorate([

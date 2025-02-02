@@ -21,8 +21,10 @@ let UserService = class UserService {
     constructor(userModel) {
         this.userModel = userModel;
     }
+    async findOne(filter) {
+        return this.userModel.findOne(filter).exec();
+    }
     async create(user) {
-        console.log({ user });
         const res = await this.userModel.create(user);
         return res;
     }
